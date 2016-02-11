@@ -3,6 +3,7 @@ package ml.chromaryu.Touhouraces.races.skill;
 /**
  * Created by chroma on 16/02/12.
  */
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -20,59 +21,58 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import ml.chromaryu.Touhouraces.THPlugin;
+import ml.chromaryu.Touhouraces.THRPlugin;
 
 public class THSkillGlobal implements Listener {
 
-    public static void global_chat(Player pl, final Plugin plugin, final AsyncPlayerChatEvent event)
-    {
+    public static void global_chat(Player pl, final Plugin plugin, final AsyncPlayerChatEvent event) {
         String format = event.getFormat();
-        if (THPlugin.plugin.getConfig().contains("user." + pl.getUniqueId())){
+        if (THRPlugin.plugin.getConfig().contains("user." + pl.getUniqueId())) {
             boolean existrace = false;
             String inforace = "";
-            for (String race : THPlugin.plugin.getConfig().getConfigurationSection("race").getKeys(false)) {
-                if (race.toLowerCase().contains(THPlugin.plugin.getConfig().getString("user." + pl.getUniqueId() + ".race"))){
+            for (String race : THRPlugin.plugin.getConfig().getConfigurationSection("race").getKeys(false)) {
+                if (race.toLowerCase().contains(THRPlugin.plugin.getConfig().getString("user." + pl.getUniqueId() + ".race"))) {
                     existrace = true;
                     inforace = race;
                     break;
                 }
             }
-            if (existrace){
-                String race = THPlugin.plugin.getConfig().getString("race." + inforace + ".display.tag");
+            if (existrace) {
+                String race = THRPlugin.plugin.getConfig().getString("race." + inforace + ".display.tag");
                 event.setFormat("§f[" + race + "§f]" + format);
-            }else {
-                String race = THPlugin.plugin.getConfig().getString("user." + pl.getUniqueId() + ".race");
+            } else {
+                String race = THRPlugin.plugin.getConfig().getString("user." + pl.getUniqueId() + ".race");
                 event.setFormat("§f[" + race + "§f]" + format);
             }
         }
     }
-    public static void global_join(Player pl, final Plugin plugin, final PlayerJoinEvent event)
-    {
-	/*メタ初期付与*/
-        MetadataValue casted = new FixedMetadataValue(THPlugin.plugin, false) ;
+
+    public static void global_join(Player pl, final Plugin plugin, final PlayerJoinEvent event) {
+    /*メタ初期付与*/
+        MetadataValue casted = new FixedMetadataValue(THRPlugin.plugin, false);
         pl.setMetadata("casting", casted);
-        MetadataValue usingmagic = new FixedMetadataValue(THPlugin.plugin, false) ;
+        MetadataValue usingmagic = new FixedMetadataValue(THRPlugin.plugin, false);
         pl.setMetadata("using-magic", usingmagic);
-        MetadataValue spilituse = new FixedMetadataValue(THPlugin.plugin, 0) ;
+        MetadataValue spilituse = new FixedMetadataValue(THRPlugin.plugin, 0);
         pl.setMetadata("spilituse", spilituse);
 	/*新規登録*/
-        if (THPlugin.plugin.getConfig().contains("user." + pl.getUniqueId()) == false){
-            THPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".name" , pl.getName());
-            THPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".point" , 0);
-            THPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".race" , "kedama");
-            THPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".spilit", 0);
-            THPlugin.plugin.saveConfig();
+        if (THRPlugin.plugin.getConfig().contains("user." + pl.getUniqueId()) == false) {
+            THRPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".name", pl.getName());
+            THRPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".point", 0);
+            THRPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".race", "kedama");
+            THRPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".spilit", 0);
+            THRPlugin.plugin.saveConfig();
         }
 
-        THPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".spilit", 0);
-        THPlugin.plugin.saveConfig();
+        THRPlugin.plugin.getConfig().set("user." + pl.getUniqueId() + ".spilit", 0);
+        THRPlugin.plugin.saveConfig();
     }
-    public static void global_quit(Player pl, final Plugin plugin, final PlayerQuitEvent event)
-    {
+
+    public static void global_quit(Player pl, final Plugin plugin, final PlayerQuitEvent event) {
         for (LivingEntity bat : pl.getWorld().getEntitiesByClass(Bat.class)) {
             if (bat.hasMetadata("invincible")) {
                 if (pl.hasMetadata("batman")) {
-                    if (((MetadataValue)pl.getMetadata("batman").get(0)).asString().toString().contains(((MetadataValue)bat.getMetadata("invincible").get(0)).asString().toString())){
+                    if (((MetadataValue) pl.getMetadata("batman").get(0)).asString().toString().contains(((MetadataValue) bat.getMetadata("invincible").get(0)).asString().toString())) {
                         bat.removeMetadata("invincible", plugin);
                         bat.damage(1000.0D);
                     }
@@ -98,63 +98,53 @@ public class THSkillGlobal implements Listener {
             pl.removeMetadata("freeze", plugin);
         }
     }
+
     //リスポーン体力調整グローバル
-    public static void global_respawnhealth(Player pl, final Plugin plugin, final PlayerRespawnEvent event)
-    {
+    public static void global_respawnhealth(Player pl, final Plugin plugin, final PlayerRespawnEvent event) {
         pl.setMaxHealth(100D);
     }
+
     //霊力調整グローバル
-    public static void global_charge_mana(Player pl, final Plugin plugin, final PlayerInteractEvent event)
-    {
-        Material dust_is_ok = pl.getItemInHand().getType() ;
-        if (pl.getMetadata("spilituse").get(0).asDouble() != 0)
-        {
-            MetadataValue spilituse = new FixedMetadataValue(THPlugin.plugin, 0) ;
+    public static void global_charge_mana(Player pl, final Plugin plugin, final PlayerInteractEvent event) {
+        Material dust_is_ok = pl.getItemInHand().getType();
+        if (pl.getMetadata("spilituse").get(0).asDouble() != 0) {
+            MetadataValue spilituse = new FixedMetadataValue(THRPlugin.plugin, 0);
             pl.setMetadata("spilituse", spilituse);
-            pl.sendMessage(THPlugin.thrpre + ChatColor.WHITE + "霊力ノーマル");
-        }
-        else
-        {
-            if (dust_is_ok == Material.SUGAR)
-            {
-                MetadataValue spilituse = new FixedMetadataValue(THPlugin.plugin, 5) ;
+            pl.sendMessage(THRPlugin.thrpre + ChatColor.WHITE + "霊力ノーマル");
+        } else {
+            if (dust_is_ok == Material.SUGAR) {
+                MetadataValue spilituse = new FixedMetadataValue(THRPlugin.plugin, 5);
                 pl.setMetadata("spilituse", spilituse);
-                pl.sendMessage(THPlugin.thrpre + ChatColor.AQUA + "霊力消費小");
-            }
-            else if (dust_is_ok == Material.SULPHUR)
-            {
-                MetadataValue spilituse = new FixedMetadataValue(THPlugin.plugin, 15) ;
+                pl.sendMessage(THRPlugin.thrpre + ChatColor.AQUA + "霊力消費小");
+            } else if (dust_is_ok == Material.SULPHUR) {
+                MetadataValue spilituse = new FixedMetadataValue(THRPlugin.plugin, 15);
                 pl.setMetadata("spilituse", spilituse);
-                pl.sendMessage(THPlugin.thrpre + ChatColor.DARK_GRAY + "霊力消費大");
-            }
-            else if (dust_is_ok == Material.GLOWSTONE_DUST)
-            {
-                MetadataValue spilituse = new FixedMetadataValue(THPlugin.plugin, -10) ;
+                pl.sendMessage(THRPlugin.thrpre + ChatColor.DARK_GRAY + "霊力消費大");
+            } else if (dust_is_ok == Material.GLOWSTONE_DUST) {
+                MetadataValue spilituse = new FixedMetadataValue(THRPlugin.plugin, -10);
                 pl.setMetadata("spilituse", spilituse);
-                pl.sendMessage(THPlugin.thrpre + ChatColor.YELLOW + "霊力回復中");
+                pl.sendMessage(THRPlugin.thrpre + ChatColor.YELLOW + "霊力回復中");
             }
         }
     }
-    public static void global_no_ninngen(Player pl, final Plugin plugin, final PlayerInteractEntityEvent event)
-    {
-        pl.sendMessage(THPlugin.thrpre + ChatColor.GRAY + "このニンゲンは何を話しているんだろう・・・");
+
+    public static void global_no_ninngen(Player pl, final Plugin plugin, final PlayerInteractEntityEvent event) {
+        pl.sendMessage(THRPlugin.thrpre + ChatColor.GRAY + "このニンゲンは何を話しているんだろう・・・");
         pl.closeInventory();
         event.setCancelled(true);
     }
-    public static void global_no_mana_attack(Player pl, final Plugin plugin, final EntityDamageByEntityEvent event)
-    {
+
+    public static void global_no_mana_attack(Player pl, final Plugin plugin, final EntityDamageByEntityEvent event) {
         event.setDamage(event.getDamage() / 2D);
-        if (pl.isSneaking())
-        {
-            pl.sendMessage(THPlugin.thrpre + ChatColor.RED + pl.getName() + "貴方は霊力再生モードの為本気を出せません！");
+        if (pl.isSneaking()) {
+            pl.sendMessage(THRPlugin.thrpre + ChatColor.RED + pl.getName() + "貴方は霊力再生モードの為本気を出せません！");
         }
     }
-    public static void global_no_mana_damaged(Player pl, final Plugin plugin, final EntityDamageByEntityEvent event)
-    {
+
+    public static void global_no_mana_damaged(Player pl, final Plugin plugin, final EntityDamageByEntityEvent event) {
         event.setDamage(event.getDamage() * 2D);
-        if (pl.isSneaking())
-        {
-            pl.sendMessage(THPlugin.thrpre + ChatColor.RED + pl.getName() + "貴方は霊力再生モードの為非常に柔いです！");
+        if (pl.isSneaking()) {
+            pl.sendMessage(THRPlugin.thrpre + ChatColor.RED + pl.getName() + "貴方は霊力再生モードの為非常に柔いです！");
         }
     }
 }

@@ -5,7 +5,6 @@ package ml.chromaryu.Touhouraces;
  */
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -22,8 +21,7 @@ import ml.chromaryu.Touhouraces.races.schedule.THSchedule;
 /*import com.shampaggon.crackshot.CSDirector; */
 /*import com.shampaggon.crackshot.events.WeaponDamageEntityEvent; */
 
-public class THRPlugin extends JavaPlugin implements Listener
-{
+public class THRPlugin extends JavaPlugin implements Listener {
     public static Logger logger = Logger.getLogger("Minecraft");
     public static THRPlugin plugin;
     public static String touhouraces = ChatColor.WHITE + "[" + ChatColor.RED + "THR" + ChatColor.WHITE + "] " + ChatColor.RESET;
@@ -33,13 +31,12 @@ public class THRPlugin extends JavaPlugin implements Listener
     public static File configfile = new File(pluginDir, "config.yml");
     public static FileConfiguration conf = YamlConfiguration.loadConfiguration(configfile);
 
-    public void onDisable(){
+    public void onDisable() {
         logger.info("[THR] Plugin Successfully Disabled!");
         saveConfig();
     }
 
-    public void onEnable()
-    {
+    public void onEnable() {
         logger.info("[THR]" + pdfFile.getVersion() + " Has Successfully Been Enabled!");
 
         PluginManager pm = getServer().getPluginManager();
@@ -47,24 +44,19 @@ public class THRPlugin extends JavaPlugin implements Listener
         saveDefaultConfig();
         registerTHRaces();
         registerTHCommand();
-        THSchedule schedule = new THSchedule() ;
-
-
-        getServer().getScheduler().scheduleSyncRepeatingTask(THRPlugin.plugin,schedule.run1(), 0L, 22L);
-        getServer().getScheduler().scheduleSyncRepeatingTask(THRPlugin.plugin,schedule.run2(), 0L, 33L);
-        getServer().getScheduler().scheduleSyncRepeatingTask(THRPlugin.plugin,schedule.run3(), 0L, 44L);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, THSchedule.run1(), 0L, 22L);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, THSchedule.run2(), 0L, 33L);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, THSchedule.run3(), 0L, 44L);
     }
 
-    public void registerTHRaces()
-    {
-        getServer().getPluginManager().registerEvents(new THRaces(), THRPlugin.plugin);
+    public void registerTHRaces() {
+        getServer().getPluginManager().registerEvents(new THRaces(), this);
     }
-    public void registerTHCommand()
-    {
+
+    public void registerTHCommand() {
         getCommand("touhouraces").setExecutor(new THCommand());
         getCommand("thr").setExecutor(new THCommand());
     }
-
 
 }
 

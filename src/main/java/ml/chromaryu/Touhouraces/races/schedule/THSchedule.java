@@ -26,35 +26,22 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import ml.chromaryu.Touhouraces.THRPlugin;
 
-public class THSchedule {
-    private THRPlugin manager;
-    private String touhouraces;
-    public THSchedule(THRPlugin manager) {
-        this.manager = manager;
-    }
-    public THSchedule(String touhouraces) {
-        this.touhouraces = touhouraces;
-    }
-    public THSchedule() {
-    }
-    public Runnable run1() {
+public class THSchedule extends JavaPlugin {
+    public static Runnable run1() {
         for (final Player player : Bukkit.getOnlinePlayers()) {
             if (player.hasMetadata("batman")) {
-                for (final LivingEntity bat : Bukkit.getWorld(manager.getConfig().getString("enableworld")).getEntitiesByClass(Bat.class)) {
+                for (final LivingEntity bat : Bukkit.getWorld(THRPlugin.plugin.getConfig().getString("enableworld")).getEntitiesByClass(Bat.class)) {
                     if (bat.hasMetadata("invincible")) {
                         if (((MetadataValue) player.getMetadata("batman").get(0)).asString().toString().contains(((MetadataValue) bat.getMetadata("invincible").get(0)).asString().toString())) {
-                            manager.getServer().getScheduler().scheduleSyncDelayedTask(this.manager, new Runnable() {
-                                private Plugin manager;
-                                private String touhouraces;
-
+                            THRPlugin.plugin.getServer().getScheduler().scheduleSyncDelayedTask(THRPlugin.plugin, new Runnable() {
                                 public void run() {
                                     player.teleport(bat);
                                     player.setGameMode(GameMode.SURVIVAL);
-                                    MetadataValue usingmagic = new FixedMetadataValue(this.manager, Boolean.valueOf(false));
+                                    MetadataValue usingmagic = new FixedMetadataValue(THRPlugin.plugin, Boolean.valueOf(false));
                                     player.setMetadata("using-magic", usingmagic);
-                                    player.removeMetadata("batman", this.manager);
-                                    player.sendMessage(this.touhouraces + ChatColor.RED + "バンプカモフラージュの効果が切れました");
-                                    bat.removeMetadata("invincible", this.manager);
+                                    player.removeMetadata("batman", THRPlugin.plugin);
+                                    player.sendMessage(THRPlugin.touhouraces + ChatColor.RED + "バンプカモフラージュの効果が切れました");
+                                    bat.removeMetadata("invincible", THRPlugin.plugin);
                                     bat.damage(1000.0D);
                                 }
                             }, 100L);
@@ -62,21 +49,21 @@ public class THSchedule {
                     }
                 }
             }
-            if ((manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") < 100.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() == 0.0D)) {
-                manager.getConfig().set("user." + player.getUniqueId() + ".spilit", Double.valueOf(manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") + 5.0D));
+            if ((THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") < 100.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() == 0.0D)) {
+                THRPlugin.plugin.getConfig().set("user." + player.getUniqueId() + ".spilit", Double.valueOf(THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") + 5.0D));
                 if (player.isSneaking()) {
-                    player.sendMessage(this.touhouraces + ChatColor.GREEN + "霊力：" + ChatColor.LIGHT_PURPLE + manager.getConfig().getDouble(new StringBuilder("user.").append(player.getUniqueId()).append(".spilit").toString()));
+                    player.sendMessage(THRPlugin.touhouraces + ChatColor.GREEN + "霊力：" + ChatColor.LIGHT_PURPLE + THRPlugin.plugin.getConfig().getDouble(new StringBuilder("user.").append(player.getUniqueId()).append(".spilit").toString()));
                 }
-            } else if ((manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") < 100.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() < 0.0D)) {
-                manager.getConfig().set("user." + player.getUniqueId() + ".spilit", Double.valueOf(manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") - ((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble()));
+            } else if ((THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") < 100.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() < 0.0D)) {
+                THRPlugin.plugin.getConfig().set("user." + player.getUniqueId() + ".spilit", Double.valueOf(THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") - ((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble()));
                 player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1.0F, -1.0F);
                 if (player.isSneaking()) {
-                    player.sendMessage(this.touhouraces + ChatColor.GREEN + "霊力：" + ChatColor.LIGHT_PURPLE + manager.getConfig().getDouble(new StringBuilder("user.").append(player.getUniqueId()).append(".spilit").toString()));
+                    player.sendMessage(THRPlugin.touhouraces + ChatColor.GREEN + "霊力：" + ChatColor.LIGHT_PURPLE + THRPlugin.plugin.getConfig().getDouble(new StringBuilder("user.").append(player.getUniqueId()).append(".spilit").toString()));
                 }
-            } else if ((manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") > 0.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() > 0.0D)) {
-                manager.getConfig().set("user." + player.getUniqueId() + ".spilit", Double.valueOf(manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") - ((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble()));
+            } else if ((THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") > 0.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() > 0.0D)) {
+                THRPlugin.plugin.getConfig().set("user." + player.getUniqueId() + ".spilit", Double.valueOf(THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") - ((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble()));
                 if (player.isSneaking()) {
-                    player.sendMessage(this.touhouraces + ChatColor.GREEN + "霊力：" + ChatColor.LIGHT_PURPLE + manager.getConfig().getDouble(new StringBuilder("user.").append(player.getUniqueId()).append(".spilit").toString()));
+                    player.sendMessage(THRPlugin.touhouraces + ChatColor.GREEN + "霊力：" + ChatColor.LIGHT_PURPLE + THRPlugin.plugin.getConfig().getDouble(new StringBuilder("user.").append(player.getUniqueId()).append(".spilit").toString()));
                 }
             }
             if (player.hasPermission("thr.skill")) {
@@ -90,7 +77,7 @@ public class THSchedule {
                         }
                     }
                 }
-                if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("youma")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kappa")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("tenngu"))) {
+                if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("youma")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kappa")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("tenngu"))) {
                     if (!player.isDead()) {
                         if (player.getHealth() > player.getMaxHealth() - 2.0D) {
                             player.setHealth(player.getMaxHealth());
@@ -98,8 +85,8 @@ public class THSchedule {
                             player.setHealth(2.0D + player.getHealth());
                         }
                     }
-                } else if (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kennyou")) {
-                    if ((!player.isDead()) && (manager.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") >= 10.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() > 0.0D)) {
+                } else if (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kennyou")) {
+                    if ((!player.isDead()) && (THRPlugin.plugin.getConfig().getDouble("user." + player.getUniqueId() + ".spilit") >= 10.0D) && (((MetadataValue) player.getMetadata("spilituse").get(0)).asDouble() > 0.0D)) {
                         if (player.getHealth() > player.getMaxHealth() - 5.0D) {
                             player.setHealth(player.getMaxHealth());
                         } else {
@@ -120,34 +107,34 @@ public class THSchedule {
         return null;
     }
 
-    public Runnable run2() {
+    public static Runnable run2() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("youma")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kappa")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("tenngu")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kennyou"))) {
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("youma")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kappa")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("tenngu")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kennyou"))) {
                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 2000, 0));
-                if (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kappa")) {
+                if (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kappa")) {
                     player.removePotionEffect(PotionEffectType.WATER_BREATHING);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 2000, 0));
                 }
             }
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("akuma")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kyuuketuki")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("oni"))) {
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("akuma")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kyuuketuki")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("oni"))) {
                 player.removePotionEffect(PotionEffectType.ABSORPTION);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2000, 1));
             }
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("yousei")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("satori")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kobito")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kibito"))) {
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("yousei")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("satori")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kobito")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kibito"))) {
                 player.removePotionEffect(PotionEffectType.JUMP);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2000, 1));
             }
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("youzyuu")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("siki")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("zyuuzin")) || (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("ninngyo"))) {
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("youzyuu")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("siki")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("zyuuzin")) || (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("ninngyo"))) {
                 if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2000, 0));
                 }
-                if (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("ninngyo")) {
+                if (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("ninngyo")) {
                     player.removePotionEffect(PotionEffectType.WATER_BREATHING);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 2000, 0));
                 }
             }
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("zyuuzin")) && (player.getWorld().getTime() >= 16000L)) {
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("zyuuzin")) && (player.getWorld().getTime() >= 16000L)) {
                 if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2000, 1));
                 }
@@ -158,11 +145,11 @@ public class THSchedule {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 2000, 0));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 2000, 0));
             }
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("zyuuzin")) && (player.getWorld().getTime() >= 16000L) && (player.getWorld().getTime() < 16100L)) {
-                player.sendMessage(this.touhouraces + ChatColor.RED + "あなたは獣の血を呼び覚ました！！");
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("zyuuzin")) && (player.getWorld().getTime() >= 16000L) && (player.getWorld().getTime() < 16100L)) {
+                player.sendMessage(THRPlugin.touhouraces + ChatColor.RED + "あなたは獣の血を呼び覚ました！！");
                 player.playSound(player.getLocation(), Sound.WOLF_DEATH, 1.0F, -1.0F);
             }
-            if ((manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kyuuketuki")) && (player.getWorld().getTime() >= 14000L)) {
+            if ((THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kyuuketuki")) && (player.getWorld().getTime() >= 14000L)) {
                 player.removePotionEffect(PotionEffectType.NIGHT_VISION);
                 player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
                 if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
@@ -171,15 +158,15 @@ public class THSchedule {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 2000, 0));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2000, 0));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2000, 1));
-            } else if (manager.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kyuuketuki")) {
+            } else if (THRPlugin.plugin.getConfig().getString("user." + player.getUniqueId() + ".race").toString().contains("kyuuketuki")) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2000, 0));
             }
         }
         return null;
     }
 
-    public Runnable run3() {
-        for (Bat bat : Bukkit.getWorld(manager.getConfig().getString("enableworld")).getEntitiesByClass(Bat.class)) {
+    public static Runnable run3() {
+        for (Bat bat : Bukkit.getWorld(THRPlugin.plugin.getConfig().getString("enableworld")).getEntitiesByClass(Bat.class)) {
             if (bat.hasMetadata("invincible")) {
                 List<Entity> entityforsyugorei = bat.getNearbyEntities(20.0D, 20.0D, 20.0D);
                 for (Entity entity : entityforsyugorei) {
@@ -190,7 +177,7 @@ public class THSchedule {
                 }
             }
         }
-        for (final Snowman snowman : Bukkit.getWorld(manager.getConfig().getString("enableworld")).getEntitiesByClass(Snowman.class)) {
+        for (final Snowman snowman : Bukkit.getWorld(THRPlugin.plugin.getConfig().getString("enableworld")).getEntitiesByClass(Snowman.class)) {
             if (snowman.hasMetadata("syugoreisnow")) {
                 if (snowman.hasMetadata("syugoreitarget")) {
                     List<Entity> entityforsyugorei = snowman.getNearbyEntities(20.0D, 20.0D, 20.0D);
@@ -203,14 +190,14 @@ public class THSchedule {
                         }
                     }
                 }
-                manager.getServer().getScheduler().scheduleSyncDelayedTask(this.manager, new Runnable() {
+                THRPlugin.plugin.getServer().getScheduler().scheduleSyncDelayedTask(THRPlugin.plugin, new Runnable() {
                     public void run() {
                         snowman.damage(1000.0D);
                     }
                 }, 300L);
             }
         }
-        for (final IronGolem irongolem : Bukkit.getWorld(manager.getConfig().getString("enableworld")).getEntitiesByClass(IronGolem.class)) {
+        for (final IronGolem irongolem : Bukkit.getWorld(THRPlugin.plugin.getConfig().getString("enableworld")).getEntitiesByClass(IronGolem.class)) {
             if (irongolem.hasMetadata("syugoreiiron")) {
                 if (irongolem.hasMetadata("syugoreitarget")) {
                     if (irongolem.getMetadata("syugoreitarget").get(0) != null) {
@@ -225,14 +212,14 @@ public class THSchedule {
                         }
                     }
                 }
-                manager.getServer().getScheduler().scheduleSyncDelayedTask(this.manager, new Runnable() {
+                THRPlugin.plugin.getServer().getScheduler().scheduleSyncDelayedTask(THRPlugin.plugin, new Runnable() {
                     public void run() {
                         irongolem.damage(1000.0D);
                     }
                 }, 300L);
             }
         }
-        for (Wolf wolf : Bukkit.getWorld(manager.getConfig().getString("enableworld")).getEntitiesByClass(Wolf.class)) {
+        for (Wolf wolf : Bukkit.getWorld(THRPlugin.plugin.getConfig().getString("enableworld")).getEntitiesByClass(Wolf.class)) {
             if (wolf.hasMetadata("tamedwolf")) {
                 if (wolf.hasMetadata("wolfowner")) {
                     String owner = ((MetadataValue) wolf.getMetadata("wolfowner").get(0)).asString();
@@ -252,7 +239,7 @@ public class THSchedule {
                 }
             }
         }
-        for (Ocelot cat : Bukkit.getWorld(manager.getConfig().getString("enableworld")).getEntitiesByClass(Ocelot.class)) {
+        for (Ocelot cat : Bukkit.getWorld(THRPlugin.plugin.getConfig().getString("enableworld")).getEntitiesByClass(Ocelot.class)) {
             if (cat.hasMetadata("tamedcat")) {
                 if (cat.hasMetadata("catowner")) {
                     String owner = ((MetadataValue) cat.getMetadata("catowner").get(0)).asString();
@@ -274,12 +261,7 @@ public class THSchedule {
                 }
             }
         }
-        manager.saveConfig();
+        THRPlugin.plugin.saveConfig();
         return null;
-    }
-
-    public void run() {
-        // TODO 自動生成されたメソッド・スタブ
-
     }
 }
